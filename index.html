@@ -236,6 +236,51 @@
   .prog{font-size:12.5px;color:var(--tinta2);font-weight:600}
   .prog b{color:var(--azul)}
   .tile .ic svg{width:24px;height:24px;stroke:var(--azul);fill:none;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+
+  /* ====== REGISTRAR HORAS (rediseño) ====== */
+  .month-nav{display:flex;align-items:center;justify-content:center;gap:18px}
+  .mn-btn{width:42px;height:42px;border-radius:50%;background:var(--celeste-soft);color:var(--azul);
+    font-size:20px;font-weight:700;display:flex;align-items:center;justify-content:center;transition:.15s;border:1px solid #d8e6fb}
+  .mn-btn:hover{background:#dfeaff;transform:scale(1.06)}
+  .mn-label{text-align:center;min-width:190px}
+  .mn-mes{font-size:21px;font-weight:800;color:var(--azul);letter-spacing:-.4px}
+  .mn-hoy{margin-top:2px;font-size:12px;color:var(--azul2);font-weight:600}
+  .mn-hoy:hover{text-decoration:underline}
+  .pbar{height:7px;background:#e9eef7;border-radius:7px;margin-top:16px;overflow:hidden}
+  .pbar-fill{height:100%;background:var(--azul2);border-radius:7px;width:0;transition:width .35s cubic-bezier(.2,.8,.2,1)}
+
+  .proj-group{border:1px solid var(--linea);border-radius:14px;margin-bottom:14px;overflow:hidden;background:#fff}
+  .proj-head{display:flex;align-items:center;gap:10px;padding:12px 16px;background:#f8fafe;border-bottom:1px solid var(--linea)}
+  .proj-head .subtotal{margin-left:auto;font-weight:800;color:var(--azul);font-size:14px}
+  .task-row{padding:14px 16px;border-bottom:1px solid var(--linea);transition:background .15s}
+  .task-row:last-child{border-bottom:none}
+  .task-row.filled{background:#f6fbf8;box-shadow:inset 3px 0 0 var(--ok)}
+  .tr-top{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+  .tr-name{flex:1;min-width:200px;font-weight:600;font-size:14px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+  .tr-controls{display:flex;align-items:center;gap:10px}
+  .stepper{display:flex;align-items:stretch;border:1.5px solid var(--linea);border-radius:11px;overflow:hidden;background:#fff}
+  .stepper button{width:38px;font-size:17px;font-weight:700;color:var(--azul);background:#f6f9fe;transition:.12s}
+  .stepper button:hover{background:var(--celeste-soft)}
+  .stepper button:active{background:#d5e6ff}
+  .stepper input{width:72px;border:none;text-align:center;font-weight:700;font-size:15px;color:var(--tinta);background:#fff;padding:9px 4px}
+  .stepper input:focus{outline:none;background:#fbfdff}
+  .stepper input::-webkit-outer-spin-button,.stepper input::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
+  .stepper input[type=number]{-moz-appearance:textfield;appearance:textfield}
+  .desc-toggle{font-size:12.5px;font-weight:600;color:var(--tinta2);padding:8px 12px;border-radius:9px;border:1px dashed var(--gris);transition:.15s;white-space:nowrap}
+  .desc-toggle:hover{color:var(--azul);border-color:var(--celeste)}
+  .desc-toggle.has{color:var(--azul);border-style:solid;border-color:#d8e6fb;background:var(--celeste-soft)}
+  .tr-desc{margin-top:11px}
+  .pill.pre{background:#fff7e6;color:#9a6b00}
+
+  .sticky-save{position:sticky;bottom:14px;z-index:15;display:flex;align-items:center;gap:16px;
+    background:var(--azul);color:#fff;border-radius:15px;padding:13px 18px;margin-top:18px;
+    box-shadow:0 14px 34px rgba(22,74,152,.35)}
+  .sticky-save .ss-total{font-size:19px;font-weight:800;letter-spacing:-.4px}
+  .sticky-save .ss-sub{font-size:11.5px;opacity:.75;font-weight:600}
+  .sticky-save .ss-dirty{font-size:12px;font-weight:700;color:#ffd88a;display:none}
+  .sticky-save.dirty .ss-dirty{display:block}
+  .sticky-save .spacer{flex:1}
+  .sticky-save .btn.ok{padding:12px 26px;font-size:14.5px}
 </style>
 </head>
 <body>
@@ -720,25 +765,46 @@ async function genReporteProyecto(){
 /* ============================================================
    MÓDULO 2 · REGISTRAR HORAS
 ============================================================ */
+let REG = { anio:0, mes:0, dirty:false };
 async function viewRegistrar(){
   crumbs([{label:'Inicio',fn:goHome},{label:'Registrar horas'}]);
   const {anio,mes}=currentYM();
+  REG={anio,mes,dirty:false};
   V().innerHTML=`
     <div class="panel">
-      <h3>Registrar horas</h3>
-      <div class="desc">Aparecen las tareas que te asignó el administrador. Solo completa las horas y, si quieres, una descripción.</div>
-      <div class="toolbar">
-        <div class="grow"><label class="f">Mes</label><select class="i" id="regMes" onchange="loadMisTareas()">${monthOptions(mes)}</select></div>
-        <div class="grow"><label class="f">Año</label><select class="i" id="regAnio" onchange="loadMisTareas()">${yearOptions(anio)}</select></div>
+      <div class="month-nav">
+        <button class="mn-btn" onclick="regShift(-1)" title="Mes anterior">‹</button>
+        <div class="mn-label">
+          <div class="mn-mes" id="mnMes">—</div>
+          <button class="mn-hoy hidden" id="mnHoy" onclick="regHoy()">Ir al mes actual</button>
+        </div>
+        <button class="mn-btn" onclick="regShift(1)" title="Mes siguiente">›</button>
       </div>
+      <div class="pbar"><div class="pbar-fill" id="pbarFill"></div></div>
+      <div class="prog" id="regProg" style="text-align:center;margin-top:9px"></div>
     </div>
     <div id="misTareas"></div>`;
   loadMisTareas();
 }
+function regShift(d){
+  if(REG.dirty && !confirm('Tienes cambios sin guardar en este mes. ¿Cambiar de mes y descartarlos?')) return;
+  REG.mes+=d; if(REG.mes<1){REG.mes=12;REG.anio--;} if(REG.mes>12){REG.mes=1;REG.anio++;}
+  REG.dirty=false; loadMisTareas();
+}
+function regHoy(){
+  if(REG.dirty && !confirm('Tienes cambios sin guardar. ¿Ir al mes actual y descartarlos?')) return;
+  const {anio,mes}=currentYM(); REG={anio,mes,dirty:false}; loadMisTareas();
+}
+function regHeaderRefresh(){
+  const {anio,mes}=currentYM();
+  document.getElementById('mnMes').textContent=`${MESES[REG.mes-1]} ${REG.anio}`;
+  document.getElementById('mnHoy').classList.toggle('hidden', REG.anio===anio && REG.mes===mes);
+}
 async function loadMisTareas(){
+  regHeaderRefresh();
   const cont=document.getElementById('misTareas');
   cont.innerHTML=`<div class="panel"><div class="empty"><div class="spin" style="margin:0 auto 12px"></div>Cargando tus tareas…</div></div>`;
-  const mes=+document.getElementById('regMes').value, anio=+document.getElementById('regAnio').value;
+  const mes=REG.mes, anio=REG.anio;
   let pm=mes-1, pa=anio; if(pm<1){ pm=12; pa--; }
   try{
     const [tareas,regs,coms]=await Promise.all([readTab(TAB.TAR),readTab(TAB.REG),readTab(TAB.COM)]);
@@ -746,63 +812,105 @@ async function loadMisTareas(){
     if(mine.length===0){
       cont.innerHTML=`<div class="panel"><div class="empty"><div class="ic">🗒️</div>
         <b>Sin tareas asignadas para ${MESES[mes-1]} ${anio}.</b>
-        <p style="margin-top:6px">Pídele al administrador que te asigne tareas para este mes.</p></div></div>`;
+        <p style="margin-top:6px">Usa las flechas ‹ › para ver otro mes, o pídele al administrador que te asigne tareas.</p></div></div>`;
+      document.getElementById('regProg').textContent=''; document.getElementById('pbarFill').style.width='0';
       return;
     }
     const prev = k => regs.rows.find(x=>(x.correo||'').toLowerCase()===ME.email && +x.anio===anio && +x.mes===mes && x.tarea===k) || null;
     const prevMonth = k => regs.rows.find(x=>(x.correo||'').toLowerCase()===ME.email && +x.anio===pa && +x.mes===pm && x.tarea===k) || null;
     const miCom = coms.rows.find(c=>(c.correo||'').toLowerCase()===ME.email && +c.anio===anio && +c.mes===mes);
     let precargadas=0;
-    let cards='';
+    // agrupar por proyecto preservando el orden de asignación
+    const grupos=[]; const idx={};
     mine.forEach(t=>{
-      const p=prev(t.tarea);
-      let horas = (p && p.horas!==undefined && p.horas!=='')? p.horas : '';
-      let desc  = p? (p.descripcion||'') : '';
-      let pre=false;
-      if(!p){ // sin registro este mes → precargar horas del periodo anterior
-        const q=prevMonth(t.tarea);
-        if(q && q.horas!=='' && q.horas!==undefined){ horas=q.horas; pre=true; precargadas++; }
-      }
-      cards+=`<div class="task-card">
-        <div class="head">
-          <span class="pill blue proj">${esc(t.proyecto||'—')}</span>
-          <span class="name">${esc(t.tarea)}</span>
-          ${pre?'<span class="pill" style="background:#fff7e6;color:#9a6b00">Precargada</span>':''}
-        </div>
-        <div class="grid2">
-          <div><label class="f">Horas</label><input class="i regH" data-t="${esc(t.tarea)}" data-p="${esc(t.proyecto||'')}" type="number" min="0" step="0.25" value="${esc(horas)}" placeholder="0"></div>
-          <div><label class="f">Descripción (opcional)</label><input class="i regD" data-t="${esc(t.tarea)}" type="text" value="${esc(desc)}" placeholder="Detalle del trabajo…"></div>
-        </div>
+      const p=t.proyecto||'—';
+      if(!(p in idx)){ idx[p]=grupos.length; grupos.push({proyecto:p,tareas:[]}); }
+      grupos[idx[p]].tareas.push(t);
+    });
+    let html='';
+    grupos.forEach(g=>{
+      let filas='';
+      g.tareas.forEach(t=>{
+        const p=prev(t.tarea);
+        let horas=(p && p.horas!==undefined && p.horas!=='')? p.horas : '';
+        let desc = p? (p.descripcion||'') : '';
+        let pre=false;
+        if(!p){ const q=prevMonth(t.tarea); if(q && q.horas!=='' && q.horas!==undefined){ horas=q.horas; pre=true; precargadas++; } }
+        const hasDesc=desc.trim()!=='';
+        filas+=`<div class="task-row">
+          <div class="tr-top">
+            <div class="tr-name">${esc(t.tarea)} ${pre?'<span class="pill pre">Precargada</span>':''}</div>
+            <div class="tr-controls">
+              <div class="stepper">
+                <button type="button" onclick="stepH(this,-0.5)" title="Restar media hora">−</button>
+                <input class="regH" data-t="${esc(t.tarea)}" data-p="${esc(t.proyecto||'')}" type="number" min="0" step="0.25" value="${esc(horas)}" placeholder="0">
+                <button type="button" onclick="stepH(this,0.5)" title="Sumar media hora">+</button>
+              </div>
+              <button type="button" class="desc-toggle ${hasDesc?'has':''}" onclick="toggleDesc(this)">${hasDesc?'✎ Nota ✓':'✎ Nota'}</button>
+            </div>
+          </div>
+          <div class="tr-desc ${hasDesc?'':'hidden'}">
+            <input class="i regD" data-t="${esc(t.tarea)}" type="text" value="${esc(desc)}" placeholder="¿En qué consistió el trabajo? (opcional)">
+          </div>
+        </div>`;
+      });
+      html+=`<div class="proj-group">
+        <div class="proj-head"><span class="pill blue">${esc(g.proyecto)}</span><span class="subtotal" data-proj="${esc(g.proyecto)}">0 h</span></div>
+        ${filas}
       </div>`;
     });
-    let html=`<div class="panel">
-      <div class="toolbar" style="margin-bottom:14px">
-        <h3 style="flex:1;margin:0">${MESES[mes-1]} ${anio} · ${mine.length} tarea(s)</h3>
-        <span class="prog" id="regProg"></span>
+    html=`${precargadas?`<div class="note">⚡ Se precargaron <b>${precargadas}</b> tarea(s) con tus horas de ${MESES[pm-1]} ${pa} como punto de partida. Revisa, ajusta y guarda.</div>`:''}
+      ${html}
+      <div class="panel">
+        <label class="f">Comentario para el administrador (opcional)</label>
+        <textarea class="i" id="regCom" rows="2" placeholder="Ej. Este mes dediqué más tiempo a X porque…">${esc(miCom?miCom.comentario:'')}</textarea>
+        <label class="chk" style="margin-top:12px"><input type="checkbox" id="regMail"> Enviarme copia de mis horas por correo</label>
       </div>
-      ${precargadas?`<div class="note">Se precargaron <b>${precargadas}</b> tarea(s) con las horas de ${MESES[pm-1]} ${pa} como punto de partida. Revisa y ajusta antes de guardar.</div>`:''}
-      ${cards}
-      <div style="margin-top:16px"><label class="f">Comentario para el administrador (opcional)</label>
-        <textarea class="i" id="regCom" rows="2" placeholder="Ej. Este mes dediqué más tiempo a X porque…">${esc(miCom?miCom.comentario:'')}</textarea></div>
-      <div class="sum-line"><span>Total del mes</span><span id="regTotal">0 h</span></div>
-      <div class="row-actions" style="margin-top:16px">
+      <div class="sticky-save" id="stickySave">
+        <div><div class="ss-total" id="regTotal">0 h</div><div class="ss-sub">total del mes</div></div>
+        <div class="ss-dirty">● Cambios sin guardar</div>
+        <div class="spacer"></div>
         <button class="btn ok" onclick="guardarMisHoras()">Guardar horas</button>
-        <label class="chk"><input type="checkbox" id="regMail"> Enviarme copia por correo</label>
-      </div></div>`;
+      </div>`;
     cont.innerHTML=html;
-    cont.querySelectorAll('.regH').forEach(inp=>inp.addEventListener('input',sumRegTotal));
-    sumRegTotal();
+    cont.querySelectorAll('.regH').forEach(inp=>inp.addEventListener('input',()=>{ markDirty(); sumRegTotal(); }));
+    cont.querySelectorAll('.regD, #regCom').forEach(inp=>inp.addEventListener('input',markDirty));
+    REG.dirty=false; sumRegTotal();
   }catch(e){ cont.innerHTML=`<div class="panel"><div class="empty">Error: ${esc(e.message)}</div></div>`; }
+}
+function stepH(btn,delta){
+  const inp=btn.parentElement.querySelector('input');
+  let v=Math.max(0,(parseFloat(inp.value)||0)+delta);
+  v=Math.round(v*100)/100;
+  inp.value=(v===0 && delta<0)? '' : v;
+  inp.dispatchEvent(new Event('input'));
+}
+function toggleDesc(btn){
+  const wrap=btn.closest('.task-row').querySelector('.tr-desc');
+  wrap.classList.toggle('hidden');
+  if(!wrap.classList.contains('hidden')) wrap.querySelector('input').focus();
+}
+function markDirty(){
+  REG.dirty=true;
+  const s=document.getElementById('stickySave'); if(s) s.classList.add('dirty');
 }
 function sumRegTotal(){
   let s=0,filled=0; const all=document.querySelectorAll('.regH');
-  all.forEach(i=>{ const v=parseFloat(i.value)||0; s+=v; if(i.value!=='') filled++; });
+  const sub={};
+  all.forEach(i=>{
+    const v=parseFloat(i.value)||0; s+=v; if(i.value!=='') filled++;
+    const p=i.dataset.p||'—'; sub[p]=(sub[p]||0)+v;
+  });
+  all.forEach(i=>{ i.closest('.task-row').classList.toggle('filled', i.value!=='' && parseFloat(i.value)>0); });
+  document.querySelectorAll('.subtotal').forEach(el=>{ el.textContent=(Math.round((sub[el.dataset.proj]||0)*100)/100)+' h'; });
   const el=document.getElementById('regTotal'); if(el) el.textContent=(Math.round(s*100)/100)+' h';
-  const pr=document.getElementById('regProg'); if(pr) pr.innerHTML=`<b>${filled}</b> de ${all.length} con horas`;
+  const pr=document.getElementById('regProg'); if(pr) pr.innerHTML= all.length? `<b>${filled}</b> de ${all.length} tareas con horas` : '';
+  const pb=document.getElementById('pbarFill'); if(pb) pb.style.width= all.length? (filled/all.length*100)+'%' : '0';
 }
+window.addEventListener('beforeunload',(e)=>{ if(REG.dirty){ e.preventDefault(); e.returnValue=''; } });
 
 async function guardarMisHoras(){
-  const mes=+document.getElementById('regMes').value, anio=+document.getElementById('regAnio').value;
+  const mes=REG.mes, anio=REG.anio;
   loader(true,'Guardando…');
   try{
     const usuarios=await getUsuarios();
@@ -827,7 +935,9 @@ async function guardarMisHoras(){
         `Hola ${nombre},\n\nRegistraste ${total} h en ${MESES[mes-1]} ${anio}:\n\n${body}\n\n— Sistema DCD, CENFOTEC`).catch(()=>{});
     }
     toast('Horas guardadas correctamente','ok');
+    REG.dirty=false;
     checkTodosRegistraron(anio,mes).catch(()=>{});
+    loadMisTareas();
   }catch(e){ toast('Error al guardar: '+e.message,'err'); } finally{ loader(false); }
 }
 function cssq(s){ return String(s).replace(/["\\]/g,'\\$&'); }
