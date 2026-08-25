@@ -62,7 +62,6 @@
   .login-card .eyebrow{text-transform:uppercase;letter-spacing:2.5px;font-size:10.5px;color:var(--azul2);font-weight:700;margin-bottom:12px}
   .login-card h1{font-size:23px;color:var(--azul);letter-spacing:-.4px;font-weight:800}
   .login-card .sub{color:var(--tinta2);font-size:14px;margin:6px 0 28px}
-  #gbtn{margin:6px auto 0;display:flex;justify-content:center;min-height:44px}
   .login-foot{margin-top:24px;font-size:12.5px;color:#93a0b6;line-height:1.5}
   .stripe{display:flex;gap:6px;justify-content:center;margin-top:26px}
   .stripe::before,.stripe::after,.stripe > i{content:"";display:block;height:5px;width:34px;border-radius:5px;background:var(--gris)}
@@ -197,6 +196,46 @@
   .sum-line{display:flex;justify-content:space-between;align-items:center;padding:14px 4px 4px;border-top:1.5px solid var(--linea);margin-top:8px;font-weight:700;color:var(--azul);font-size:15px}
   .chk{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--tinta2);user-select:none;cursor:pointer}
   .chk input{width:16px;height:16px;accent-color:var(--azul2)}
+
+  /* ====== NUEVOS COMPONENTES ====== */
+  .gsi-btn{
+    display:flex;align-items:center;justify-content:center;gap:11px;width:100%;max-width:300px;margin:4px auto 0;
+    padding:12px 18px;border:1.5px solid var(--linea);border-radius:12px;background:#fff;
+    font-weight:600;font-size:14.5px;color:var(--tinta);transition:.15s;box-shadow:var(--sombra-suave);
+  }
+  .gsi-btn:hover:not(:disabled){border-color:var(--celeste);background:#fbfdff;transform:translateY(-1px)}
+  .gsi-btn:disabled{opacity:.55;cursor:wait}
+  .login-hint{margin-top:14px;font-size:12px;color:#93a0b6;line-height:1.55}
+
+  #reconnect{position:fixed;inset:0;background:rgba(20,34,60,.55);backdrop-filter:blur(3px);
+    display:none;align-items:center;justify-content:center;z-index:95;padding:20px}
+  #reconnect.show{display:flex}
+  .reconnect-card{background:#fff;border-radius:18px;padding:32px 30px;max-width:380px;text-align:center;
+    box-shadow:0 28px 60px rgba(8,26,58,.35);animation:rise .35s cubic-bezier(.2,.8,.2,1)}
+  .reconnect-card .ic{font-size:36px;margin-bottom:10px}
+  .reconnect-card h3{font-size:17px;color:var(--azul);font-weight:700;margin-bottom:8px}
+  .reconnect-card p{font-size:13.5px;color:var(--tinta2);margin-bottom:18px;line-height:1.55}
+
+  .chips{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:16px}
+  .chip{display:flex;align-items:center;gap:9px;padding:10px 16px;border-radius:12px;font-size:13px;font-weight:600;border:1px solid var(--linea);background:#fbfcfe}
+  .chip .num{font-size:19px;font-weight:800;letter-spacing:-.5px}
+  .chip.g{border-color:#cfe8da;background:#f2faf5;color:#1a7a44}
+  .chip.r{border-color:#f3d7d7;background:#fdf5f5;color:#bd3838}
+  .chip.b{border-color:#d8e6fb;background:var(--celeste-soft);color:var(--azul)}
+
+  .status-strip{display:flex;align-items:center;gap:14px;background:#fff;border:1px solid var(--linea);
+    border-radius:var(--radio);padding:16px 20px;margin-bottom:24px;box-shadow:var(--sombra-suave);flex-wrap:wrap}
+  .status-strip .lbl{font-size:12px;color:var(--tinta2);text-transform:uppercase;letter-spacing:.6px;font-weight:700}
+  .status-strip .val{font-size:15px;font-weight:700;color:var(--azul)}
+  .status-strip .sep{width:1px;height:26px;background:var(--linea)}
+
+  .comment-view{background:#fbfcfe;border:1px solid var(--linea);border-left:3px solid var(--celeste);
+    border-radius:10px;padding:12px 15px;margin-bottom:10px;font-size:13px}
+  .comment-view .meta{font-size:11.5px;color:var(--tinta2);font-weight:700;margin-bottom:4px}
+
+  .prog{font-size:12.5px;color:var(--tinta2);font-weight:600}
+  .prog b{color:var(--azul)}
+  .tile .ic svg{width:24px;height:24px;stroke:var(--azul);fill:none;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
 </style>
 </head>
 <body>
@@ -208,7 +247,11 @@
     <div class="eyebrow">Universidad CENFOTEC</div>
     <h1>Sistema de Horas</h1>
     <p class="sub">Desarrollo Curricular y Docente</p>
-    <div id="gbtn"></div>
+    <button class="gsi-btn" id="btnGoogle" onclick="doLogin()" disabled>
+      <svg width="19" height="19" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>
+      <span>Ingresar con Google</span>
+    </button>
+    <div class="login-hint">Solo la primera vez se piden los permisos.<br>Después, un clic y listo.</div>
     <div class="stripe"><i></i></div>
     <div class="login-foot">Ingresa con tu cuenta institucional de Google para continuar.</div>
   </div>
@@ -237,6 +280,14 @@
 </div>
 
 <div id="loader"><div class="spin"></div><div class="msg" id="loaderMsg">Cargando…</div></div>
+<div id="reconnect">
+  <div class="reconnect-card">
+    <div class="ic">🔄</div>
+    <h3>Tu sesión con Google expiró</h3>
+    <p>Por seguridad, Google cierra la conexión cada hora. Reconéctate con un clic — no volverás a ver la lista de permisos.</p>
+    <button class="btn" onclick="doReconnect()">Reconectar</button>
+  </div>
+</div>
 <div id="toast"></div>
 
 <script>
@@ -259,10 +310,12 @@ const DRIVE_FOLDER = '1KRW-BbLzxKT8dWvRJa9xX_zzVchHHQfO';
 
 // Pestañas del sistema (modelo normalizado)
 const TAB = {
-  USR:'SYS_Usuarios',   USR_HEAD:['correo','nombre','es_empleado','activo','rol'],
-  PRO:'SYS_Proyectos',  PRO_HEAD:['proyecto','activo'],
-  TAR:'SYS_Tareas',     TAR_HEAD:['id','anio','mes','correo','proyecto','tarea'],
-  REG:'SYS_Registros',  REG_HEAD:['id','anio','mes','correo','nombre','proyecto','tarea','horas','descripcion','timestamp']
+  USR:'SYS_Usuarios',    USR_HEAD:['correo','nombre','es_empleado','activo','rol'],
+  PRO:'SYS_Proyectos',   PRO_HEAD:['proyecto','activo','nombre_largo'],
+  TAR:'SYS_Tareas',      TAR_HEAD:['id','anio','mes','correo','proyecto','tarea'],
+  REG:'SYS_Registros',   REG_HEAD:['id','anio','mes','correo','nombre','proyecto','tarea','horas','descripcion','timestamp'],
+  COM:'SYS_Comentarios', COM_HEAD:['anio','mes','correo','nombre','comentario','timestamp'],
+  CFG:'SYS_Config',      CFG_HEAD:['clave','valor']
 };
 
 const MESES = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
@@ -273,51 +326,87 @@ const PROYECTOS_SEED = ['BAE en Inglés','MISOFT','BIROB','BIA (Bachillerato en 
 
 /* ============================================================
    ESTADO / AUTH
+   - La sesión (token + perfil) se guarda en localStorage: al
+     recargar dentro de la hora no se pide nada.
+   - El popup de Google SIEMPRE se abre desde un clic del usuario,
+     por lo que el navegador no lo bloquea.
+   - Tras el primer consentimiento, los siguientes ingresos usan
+     prompt:'' (Google recuerda los permisos: no vuelve a mostrar
+     la lista de permisos, solo confirma la cuenta).
 ============================================================ */
-let token = null, tokenExp = 0, tokenClient = null;
+let token = null, tokenExp = 0, tokenClient = null, gisReady = false;
 let ME = { email:'', name:'', picture:'' };
 let CACHE = { usuarios:null, proyectos:null };
 let adminUnlocked = false;
+let pendingAfterToken = null;
 
-function jwtDecode(t){ try{ return JSON.parse(atob(t.split('.')[1].replace(/-/g,'+').replace(/_/g,'/'))); }catch(e){ return {}; } }
+function saveSession(){ try{ localStorage.setItem('dcd_session', JSON.stringify({token, tokenExp, ME})); }catch(e){} }
+function loadSession(){ try{ return JSON.parse(localStorage.getItem('dcd_session')||'null'); }catch(e){ return null; } }
+function hasGrant(){ return localStorage.getItem('dcd_granted')==='1'; }
 
 window.onload = () => {
+  // Restaurar sesión previa (sin popups) si sigue vigente
+  const s = loadSession();
+  if(s && s.token && s.tokenExp > Date.now()+60000){
+    token=s.token; tokenExp=s.tokenExp; ME=s.ME||ME;
+    enterApp();
+  }
   const wait = setInterval(()=>{
-    if(window.google && google.accounts){
-      clearInterval(wait);
-      initAuth();
+    if(window.google && google.accounts && google.accounts.oauth2){
+      clearInterval(wait); initAuth();
     }
   },120);
 };
 
 function initAuth(){
-  google.accounts.id.initialize({ client_id:CLIENT_ID, callback:onCredential });
-  google.accounts.id.renderButton(document.getElementById('gbtn'),
-    { theme:'filled_blue', size:'large', shape:'pill', text:'signin_with', width:320 });
-
   tokenClient = google.accounts.oauth2.initTokenClient({
     client_id:CLIENT_ID, scope:SCOPES,
-    callback:(resp)=>{
-      if(resp.error){ toast('No se otorgaron permisos de Google','err'); return; }
+    callback: async (resp)=>{
+      hideReconnect();
+      if(resp.error){ toast('No se otorgaron los permisos de Google','err'); setLoginBusy(false); return; }
       token = resp.access_token;
       tokenExp = Date.now() + (resp.expires_in? resp.expires_in*1000 : 3300*1000) - 60000;
+      localStorage.setItem('dcd_granted','1');
+      if(!ME.email){
+        try{
+          const u = await (await fetch('https://www.googleapis.com/oauth2/v3/userinfo',{headers:{Authorization:'Bearer '+token}})).json();
+          ME = { email:(u.email||'').toLowerCase(), name:u.name||u.email||'', picture:u.picture||'' };
+        }catch(e){}
+      }
+      saveSession();
+      setLoginBusy(false);
       if(pendingAfterToken){ const f=pendingAfterToken; pendingAfterToken=null; f(); }
+      else if(document.getElementById('app').style.display!=='flex') enterApp();
     }
   });
+  gisReady = true;
+  const b=document.getElementById('btnGoogle'); if(b) b.disabled=false;
 }
 
-function onCredential(resp){
-  const p = jwtDecode(resp.credential);
-  ME = { email:(p.email||'').toLowerCase(), name:p.name||p.email||'', picture:p.picture||'' };
-  // Pedir token de acceso (APIs) tras identificar al usuario
-  ensureToken(()=> enterApp());
+function doLogin(){
+  if(!gisReady){ toast('Google aún está cargando, intenta de nuevo','err'); return; }
+  setLoginBusy(true);
+  // Abierto desde el clic → el navegador no bloquea el popup
+  tokenClient.requestAccessToken({ prompt: hasGrant()? '' : 'consent' });
+}
+function setLoginBusy(on){
+  const b=document.getElementById('btnGoogle');
+  if(b){ b.disabled=on; b.querySelector('span').textContent = on? 'Conectando…' : 'Ingresar con Google'; }
 }
 
-let pendingAfterToken = null;
 function ensureToken(cb){
   if(token && Date.now() < tokenExp){ cb(); return; }
+  // Sesión expirada: pedir un clic (evita bloqueo de popups) y reconectar sin re-consentir
   pendingAfterToken = cb;
-  tokenClient.requestAccessToken({ prompt: token? '' : 'consent' });
+  showReconnect();
+}
+function showReconnect(){
+  document.getElementById('reconnect').classList.add('show');
+}
+function hideReconnect(){ document.getElementById('reconnect').classList.remove('show'); }
+function doReconnect(){
+  if(!gisReady){ toast('Google aún está cargando…','err'); return; }
+  tokenClient.requestAccessToken({ prompt:'' });
 }
 
 function enterApp(){
@@ -330,8 +419,10 @@ function enterApp(){
 }
 
 function logout(){
+  // Cierra la sesión local. No se revocan los permisos en Google,
+  // así el próximo ingreso es de un solo clic sin lista de permisos.
   token=null; adminUnlocked=false;
-  try{ google.accounts.id.disableAutoSelect(); }catch(e){}
+  localStorage.removeItem('dcd_session');
   location.reload();
 }
 
@@ -366,11 +457,16 @@ async function ensureSystem(){
   await ensureTab(TAB.PRO, TAB.PRO_HEAD);
   await ensureTab(TAB.TAR, TAB.TAR_HEAD);
   await ensureTab(TAB.REG, TAB.REG_HEAD);
+  await ensureTab(TAB.COM, TAB.COM_HEAD);
+  await ensureTab(TAB.CFG, TAB.CFG_HEAD);
+  // actualizar encabezado de proyectos (instalaciones previas sin nombre_largo)
+  await api(`${SS}/${SPREADSHEET_ID}/values/${enc(TAB.PRO)}!A1:${colLetter(TAB.PRO_HEAD.length)}1?valueInputOption=RAW`,
+    {method:'PUT', body:JSON.stringify({values:[TAB.PRO_HEAD]})}).catch(()=>{});
   // seed proyectos si está vacío
   const pro = await readTab(TAB.PRO);
   if(pro.rows.length===0){
-    const vals = PROYECTOS_SEED.map(p=>[p,'TRUE']);
-    await api(`${SS}/${SPREADSHEET_ID}/values/${enc(TAB.PRO)}!A2:B${vals.length+1}?valueInputOption=RAW`,
+    const vals = PROYECTOS_SEED.map(p=>[p,'TRUE','']);
+    await api(`${SS}/${SPREADSHEET_ID}/values/${enc(TAB.PRO)}!A2:C${vals.length+1}?valueInputOption=RAW`,
       {method:'PUT', body:JSON.stringify({values:vals})});
   }
   // asegurar que YO exista como admin
@@ -380,6 +476,17 @@ async function ensureSystem(){
       {method:'POST', body:JSON.stringify({values:[[ME.email, ME.name,'TRUE','TRUE','admin']]})});
   }
   CACHE.usuarios=null; CACHE.proyectos=null;
+}
+async function getConfig(clave){
+  const c=await readTab(TAB.CFG);
+  const r=c.rows.find(x=>x.clave===clave);
+  return r? r.valor : '';
+}
+async function setConfig(clave,valor){
+  const c=await readTab(TAB.CFG);
+  const rows=c.rows.filter(x=>x.clave!==clave);
+  rows.push({clave,valor});
+  await replaceTab(TAB.CFG,TAB.CFG_HEAD,rows);
 }
 async function readTab(title){
   const d = await api(`${SS}/${SPREADSHEET_ID}/values/${enc(title)}?majorDimension=ROWS`);
@@ -433,33 +540,55 @@ function esc(s){ return String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;'
 ============================================================ */
 async function goHome(){
   crumbs([{label:'Inicio'}]);
+  const {anio,mes}=currentYM();
   V().innerHTML = `
     <div class="hello">
-      <h2>Hola, ${esc(ME.name.split(' ')[0]||'')} 👋</h2>
+      <h2>Hola, ${esc(ME.name.split(' ')[0]||'')}</h2>
       <p>¿Qué deseas hacer hoy?</p>
+    </div>
+    <div class="status-strip" id="homeStatus" style="display:none">
+      <div><div class="lbl">${MESES[mes-1]} ${anio}</div><div class="val" id="hsTareas">—</div></div>
+      <div class="sep"></div>
+      <div><div class="lbl">Horas registradas</div><div class="val" id="hsHoras">—</div></div>
+      <div class="sep"></div>
+      <div><div class="lbl">Estado</div><div class="val" id="hsEstado">—</div></div>
     </div>
     <div class="menu">
       <button class="tile" onclick="viewReportes()">
         <span class="edge"></span>
-        <div class="ic">📥</div>
+        <div class="ic"><svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></div>
         <h3>Descargar reportes</h3>
         <p>Por fecha (mes/año) o por proyecto. Genera un Excel listo para compartir.</p>
       </button>
       <button class="tile" onclick="viewRegistrar()">
         <span class="edge"></span>
-        <div class="ic">⏱️</div>
+        <div class="ic"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15.5 14"/></svg></div>
         <h3>Registrar horas</h3>
         <p>Completa las horas de las tareas que te asignaron este mes.</p>
       </button>
       <button class="tile" onclick="viewAdminGate()">
         <span class="edge"></span>
-        <div class="ic">🔐</div>
+        <div class="ic"><svg viewBox="0 0 24 24"><path d="M12 3l7 3v5c0 4.5-3 8.5-7 10-4-1.5-7-5.5-7-10V6z"/><circle cx="12" cy="11" r="1.6"/><path d="M12 12.6V15"/></svg></div>
         <h3>Modo administrador</h3>
         <p>Usuarios, proyectos, asignación de tareas y control mensual.</p>
       </button>
     </div>`;
-  // Preparar sistema en segundo plano
-  ensureSystem().catch(e=>toast('No se pudo preparar el sistema: '+e.message,'err'));
+  // Preparar sistema y llenar resumen personal en segundo plano
+  ensureSystem().then(()=>fillHomeStatus(anio,mes)).catch(e=>toast('No se pudo preparar el sistema: '+e.message,'err'));
+}
+async function fillHomeStatus(anio,mes){
+  try{
+    const [tareas,regs]=await Promise.all([readTab(TAB.TAR),readTab(TAB.REG)]);
+    const asign=tareas.rows.filter(t=>(t.correo||'').toLowerCase()===ME.email && +t.anio===anio && +t.mes===mes);
+    if(asign.length===0) return; // sin tareas asignadas: no mostrar franja
+    const mine=regs.rows.filter(r=>(r.correo||'').toLowerCase()===ME.email && +r.anio===anio && +r.mes===mes && r.horas!=='');
+    const total=mine.reduce((s,r)=>s+(parseFloat(r.horas)||0),0);
+    const el=id=>document.getElementById(id); if(!el('homeStatus')) return;
+    el('hsTareas').textContent=`${asign.length} tarea(s) asignada(s)`;
+    el('hsHoras').textContent=`${Math.round(total*100)/100} h`;
+    el('hsEstado').innerHTML= mine.length>0? '<span class="pill on">Al día</span>' : '<span class="pill off">Pendiente</span>';
+    el('homeStatus').style.display='flex';
+  }catch(e){}
 }
 
 /* ============================================================
@@ -532,6 +661,12 @@ async function genReporteFecha(){
     const totRow=['TOTAL horas al mes']; let grand=0;
     personas.forEach(n=>{ totRow.push(colTot[n]); grand+=colTot[n]; }); totRow.push(grand);
     aoa.push(totRow);
+    // Leyenda con nombres largos configurados por el administrador
+    const conLargo = proyRows.map(p=>proyectos.find(x=>x.proyecto===p)).filter(x=>x && (x.nombre_largo||'').trim()!=='');
+    if(conLargo.length){
+      aoa.push([]);
+      conLargo.forEach(x=> aoa.push([`- ${x.proyecto}: ${x.nombre_largo}`]));
+    }
     const ws=XLSX.utils.aoa_to_sheet(aoa);
     ws['!cols']=[{wch:42},...personas.map(()=>({wch:14})),{wch:10}];
     const wb=XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb,ws,`${MESES_CORTO[mes-1]} ${anio}`);
@@ -544,15 +679,19 @@ async function genReporteProyecto(){
   const proy=document.getElementById('rpProy').value;
   loader(true,'Generando histórico…');
   try{
-    const regs=(await readTab(TAB.REG)).rows.filter(r=> (r.proyecto||'')===proy);
+    const [regsAll,proyectos]=await Promise.all([readTab(TAB.REG),getProyectos()]);
+    const regs=regsAll.rows.filter(r=> (r.proyecto||'')===proy);
     if(regs.length===0){ toast('Este proyecto no tiene horas registradas','err'); loader(false); return; }
+    const pInfo=proyectos.find(p=>p.proyecto===proy);
+    const largo=(pInfo && (pInfo.nombre_largo||'').trim())? pInfo.nombre_largo.trim() : '';
+    const titulo= largo? `${proy} — ${largo}` : proy;
     const anios=[...new Set(regs.map(r=>+r.anio))].sort();
     const wb=XLSX.utils.book_new();
     const histo={}; // persona -> anio -> total
     anios.forEach(a=>{
       const rr=regs.filter(r=>+r.anio===a);
       const personas=[...new Set(rr.map(r=>r.nombre||r.correo))];
-      const aoa=[['Colaborador',...MESES_CORTO,'Total Horas']];
+      const aoa=[[`Resumen de horas · ${titulo} · ${a}`],[],['Colaborador',...MESES_CORTO,'Total Horas']];
       const colTot=new Array(12).fill(0); let grand=0;
       personas.forEach(n=>{
         const row=[n]; let tot=0;
@@ -566,7 +705,7 @@ async function genReporteProyecto(){
     // hoja Total
     const personas=Object.keys(histo);
     const head=['Colaborador',...anios.map(a=>'Horas '+a),'Total Histórico'];
-    const aoa=[head]; const annTot={}; anios.forEach(a=>annTot[a]=0); let gTot=0;
+    const aoa=[[`Resumen histórico · ${titulo}`],[],head]; const annTot={}; anios.forEach(a=>annTot[a]=0); let gTot=0;
     personas.map(n=>({n,t:anios.reduce((s,a)=>s+(histo[n][a]||0),0)})).sort((a,b)=>b.t-a.t).forEach(({n,t})=>{
       const row=[n]; anios.forEach(a=>{ const v=histo[n][a]||0; row.push(v); annTot[a]+=v; }); row.push(t); aoa.push(row); gTot+=t;
     });
@@ -600,8 +739,9 @@ async function loadMisTareas(){
   const cont=document.getElementById('misTareas');
   cont.innerHTML=`<div class="panel"><div class="empty"><div class="spin" style="margin:0 auto 12px"></div>Cargando tus tareas…</div></div>`;
   const mes=+document.getElementById('regMes').value, anio=+document.getElementById('regAnio').value;
+  let pm=mes-1, pa=anio; if(pm<1){ pm=12; pa--; }
   try{
-    const [tareas,regs]=await Promise.all([readTab(TAB.TAR),readTab(TAB.REG)]);
+    const [tareas,regs,coms]=await Promise.all([readTab(TAB.TAR),readTab(TAB.REG),readTab(TAB.COM)]);
     const mine=tareas.rows.filter(t=>(t.correo||'').toLowerCase()===ME.email && +t.anio===anio && +t.mes===mes);
     if(mine.length===0){
       cont.innerHTML=`<div class="panel"><div class="empty"><div class="ic">🗒️</div>
@@ -609,22 +749,42 @@ async function loadMisTareas(){
         <p style="margin-top:6px">Pídele al administrador que te asigne tareas para este mes.</p></div></div>`;
       return;
     }
-    const prev = k => { const r=regs.rows.find(x=>(x.correo||'').toLowerCase()===ME.email && +x.anio===anio && +x.mes===mes && x.tarea===k); return r||{}; };
-    let html=`<div class="panel"><h3>${MESES[mes-1]} ${anio} · ${mine.length} tarea(s)</h3><div class="desc">Deja en blanco o 0 las tareas sin dedicación.</div>`;
-    mine.forEach((t,i)=>{
+    const prev = k => regs.rows.find(x=>(x.correo||'').toLowerCase()===ME.email && +x.anio===anio && +x.mes===mes && x.tarea===k) || null;
+    const prevMonth = k => regs.rows.find(x=>(x.correo||'').toLowerCase()===ME.email && +x.anio===pa && +x.mes===pm && x.tarea===k) || null;
+    const miCom = coms.rows.find(c=>(c.correo||'').toLowerCase()===ME.email && +c.anio===anio && +c.mes===mes);
+    let precargadas=0;
+    let cards='';
+    mine.forEach(t=>{
       const p=prev(t.tarea);
-      html+=`<div class="task-card">
+      let horas = (p && p.horas!==undefined && p.horas!=='')? p.horas : '';
+      let desc  = p? (p.descripcion||'') : '';
+      let pre=false;
+      if(!p){ // sin registro este mes → precargar horas del periodo anterior
+        const q=prevMonth(t.tarea);
+        if(q && q.horas!=='' && q.horas!==undefined){ horas=q.horas; pre=true; precargadas++; }
+      }
+      cards+=`<div class="task-card">
         <div class="head">
           <span class="pill blue proj">${esc(t.proyecto||'—')}</span>
           <span class="name">${esc(t.tarea)}</span>
+          ${pre?'<span class="pill" style="background:#fff7e6;color:#9a6b00">Precargada</span>':''}
         </div>
         <div class="grid2">
-          <div><label class="f">Horas</label><input class="i regH" data-t="${esc(t.tarea)}" data-p="${esc(t.proyecto||'')}" type="number" min="0" step="0.25" value="${p.horas!==undefined&&p.horas!==''?esc(p.horas):''}" placeholder="0"></div>
-          <div><label class="f">Descripción (opcional)</label><input class="i regD" data-t="${esc(t.tarea)}" type="text" value="${esc(p.descripcion||'')}" placeholder="Detalle del trabajo…"></div>
+          <div><label class="f">Horas</label><input class="i regH" data-t="${esc(t.tarea)}" data-p="${esc(t.proyecto||'')}" type="number" min="0" step="0.25" value="${esc(horas)}" placeholder="0"></div>
+          <div><label class="f">Descripción (opcional)</label><input class="i regD" data-t="${esc(t.tarea)}" type="text" value="${esc(desc)}" placeholder="Detalle del trabajo…"></div>
         </div>
       </div>`;
     });
-    html+=`<div class="sum-line"><span>Total del mes</span><span id="regTotal">0 h</span></div>
+    let html=`<div class="panel">
+      <div class="toolbar" style="margin-bottom:14px">
+        <h3 style="flex:1;margin:0">${MESES[mes-1]} ${anio} · ${mine.length} tarea(s)</h3>
+        <span class="prog" id="regProg"></span>
+      </div>
+      ${precargadas?`<div class="note">Se precargaron <b>${precargadas}</b> tarea(s) con las horas de ${MESES[pm-1]} ${pa} como punto de partida. Revisa y ajusta antes de guardar.</div>`:''}
+      ${cards}
+      <div style="margin-top:16px"><label class="f">Comentario para el administrador (opcional)</label>
+        <textarea class="i" id="regCom" rows="2" placeholder="Ej. Este mes dediqué más tiempo a X porque…">${esc(miCom?miCom.comentario:'')}</textarea></div>
+      <div class="sum-line"><span>Total del mes</span><span id="regTotal">0 h</span></div>
       <div class="row-actions" style="margin-top:16px">
         <button class="btn ok" onclick="guardarMisHoras()">Guardar horas</button>
         <label class="chk"><input type="checkbox" id="regMail"> Enviarme copia por correo</label>
@@ -634,7 +794,12 @@ async function loadMisTareas(){
     sumRegTotal();
   }catch(e){ cont.innerHTML=`<div class="panel"><div class="empty">Error: ${esc(e.message)}</div></div>`; }
 }
-function sumRegTotal(){ let s=0; document.querySelectorAll('.regH').forEach(i=>s+=parseFloat(i.value)||0); const el=document.getElementById('regTotal'); if(el) el.textContent=(Math.round(s*100)/100)+' h'; }
+function sumRegTotal(){
+  let s=0,filled=0; const all=document.querySelectorAll('.regH');
+  all.forEach(i=>{ const v=parseFloat(i.value)||0; s+=v; if(i.value!=='') filled++; });
+  const el=document.getElementById('regTotal'); if(el) el.textContent=(Math.round(s*100)/100)+' h';
+  const pr=document.getElementById('regProg'); if(pr) pr.innerHTML=`<b>${filled}</b> de ${all.length} con horas`;
+}
 
 async function guardarMisHoras(){
   const mes=+document.getElementById('regMes').value, anio=+document.getElementById('regAnio').value;
@@ -649,6 +814,12 @@ async function guardarMisHoras(){
       return { tarea, proyecto, horas:(h.value===''?'':parseFloat(h.value)||0), descripcion:d?d.value:'' };
     });
     await upsertRegistros(ME.email, nombre, anio, mes, entradas);
+    // comentario para el administrador
+    const comTxt=(document.getElementById('regCom')?.value||'').trim();
+    const coms=await readTab(TAB.COM);
+    const keep=coms.rows.filter(c=> !((c.correo||'').toLowerCase()===ME.email && +c.anio===anio && +c.mes===mes));
+    if(comTxt) keep.push({anio,mes,correo:ME.email,nombre,comentario:comTxt,timestamp:new Date().toISOString()});
+    await replaceTab(TAB.COM,TAB.COM_HEAD,keep);
     if(document.getElementById('regMail').checked){
       let total=entradas.reduce((s,e)=>s+(parseFloat(e.horas)||0),0);
       const body=entradas.filter(e=>e.horas!==''&&e.horas!==0).map(e=>`• ${e.proyecto} — ${e.tarea}: ${e.horas} h`).join('\n');
@@ -656,6 +827,7 @@ async function guardarMisHoras(){
         `Hola ${nombre},\n\nRegistraste ${total} h en ${MESES[mes-1]} ${anio}:\n\n${body}\n\n— Sistema DCD, CENFOTEC`).catch(()=>{});
     }
     toast('Horas guardadas correctamente','ok');
+    checkTodosRegistraron(anio,mes).catch(()=>{});
   }catch(e){ toast('Error al guardar: '+e.message,'err'); } finally{ loader(false); }
 }
 function cssq(s){ return String(s).replace(/["\\]/g,'\\$&'); }
@@ -773,7 +945,8 @@ async function admProyectos(){
   body.innerHTML=`<div class="panel"><div class="empty"><div class="spin" style="margin:0 auto 12px"></div>Cargando proyectos…</div></div>`;
   const pro=await getProyectos(true);
   const rows=pro.map((p,i)=>`<tr>
-      <td>${esc(p.proyecto)}</td>
+      <td style="font-weight:600">${esc(p.proyecto)}</td>
+      <td style="min-width:260px"><input class="i nlInput" data-i="${i}" value="${esc(p.nombre_largo||'')}" placeholder="Nombre largo para reportes…"></td>
       <td>${isTrue(p.activo)?'<span class="pill on">Vigente</span>':'<span class="pill off">Inactivo</span>'}</td>
       <td class="row-actions">
         <button class="btn mini ${isTrue(p.activo)?'sec':'ok'}" onclick="toggleProy(${i})">${isTrue(p.activo)?'Marcar inactivo':'Marcar vigente'}</button>
@@ -783,24 +956,38 @@ async function admProyectos(){
     <div class="panel">
       <h3>Añadir proyecto</h3>
       <div class="toolbar">
-        <div class="grow"><label class="f">Nombre del proyecto</label><input class="i" id="npProy" placeholder="Ej. BIA (Bachillerato en IA)"></div>
+        <div class="grow"><label class="f">Nombre corto</label><input class="i" id="npProy" placeholder="Ej. BIA"></div>
+        <div class="grow" style="flex:2"><label class="f">Nombre largo (opcional)</label><input class="i" id="npLargo" placeholder="Ej. Bachillerato en Inteligencia Artificial"></div>
         <button class="btn" onclick="addProy()">Añadir</button>
       </div>
     </div>
     <div class="panel">
-      <h3>Vigencia de proyectos (${pro.length})</h3>
-      <div class="desc">Controla con un botón si cada proyecto está vigente. Los inactivos siguen disponibles en reportes históricos.</div>
+      <h3>Proyectos (${pro.length})</h3>
+      <div class="desc">El <b>nombre largo</b> aparece en los reportes descargados (leyenda del mensual y título del histórico). La vigencia se controla con un botón; los inactivos siguen disponibles en históricos.</div>
       <div class="tbl-wrap"><table>
-        <thead><tr><th>Proyecto</th><th>Vigencia</th><th>Acciones</th></tr></thead>
-        <tbody>${rows||'<tr><td colspan="3" class="empty">Sin proyectos.</td></tr>'}</tbody>
+        <thead><tr><th>Proyecto</th><th>Nombre largo (reportes)</th><th>Vigencia</th><th>Acciones</th></tr></thead>
+        <tbody>${rows||'<tr><td colspan="4" class="empty">Sin proyectos.</td></tr>'}</tbody>
       </table></div>
+      <div class="row-actions" style="margin-top:14px">
+        <button class="btn" onclick="guardarNombresLargos()">Guardar nombres largos</button>
+      </div>
     </div>`;
+}
+async function guardarNombresLargos(){
+  loader(true,'Guardando…');
+  try{
+    const pro=await getProyectos(true);
+    document.querySelectorAll('.nlInput').forEach(inp=>{ pro[+inp.dataset.i].nombre_largo=inp.value.trim(); });
+    await replaceTab(TAB.PRO,TAB.PRO_HEAD,pro); await getProyectos(true);
+    toast('Nombres largos guardados','ok');
+  }catch(e){ toast('Error: '+e.message,'err'); } finally{ loader(false); }
 }
 async function addProy(){
   const n=document.getElementById('npProy').value.trim(); if(!n){ toast('Escribe un nombre','err'); return; }
+  const largo=document.getElementById('npLargo').value.trim();
   loader(true,'Guardando…');
   try{ const pro=await getProyectos(true); if(pro.find(p=>p.proyecto===n)){ toast('Ya existe','err'); loader(false); return; }
-    await appendRow(TAB.PRO,[n,'TRUE']); await getProyectos(true); admProyectos(); toast('Proyecto añadido','ok'); }
+    await appendRow(TAB.PRO,[n,'TRUE',largo]); await getProyectos(true); admProyectos(); toast('Proyecto añadido','ok'); }
   catch(e){ toast('Error: '+e.message,'err'); } finally{ loader(false); }
 }
 async function toggleProy(i){
@@ -903,46 +1090,118 @@ async function guardarAsignacion(){
 async function admEstado(){
   const body=document.getElementById('admBody');
   const {anio,mes}=currentYM();
+  const correoAviso=await getConfig('correo_aviso').catch(()=>'');
   body.innerHTML=`
     <div class="panel">
       <h3>Control mensual de horas</h3>
-      <div class="desc">Revisa quién ya registró sus horas y edita cualquier valor si hubo un error. También puedes llenar las horas de tus empleados aquí.</div>
+      <div class="desc">Revisa quién ya registró, envía recordatorios por correo y edita cualquier valor si hubo un error. También puedes llenar las horas de tus empleados aquí.</div>
       <div class="toolbar">
         <div class="grow"><label class="f">Mes</label><select class="i" id="esMes" onchange="cargarEstado()">${monthOptions(mes)}</select></div>
         <div class="grow"><label class="f">Año</label><select class="i" id="esAnio" onchange="cargarEstado()">${yearOptions(anio)}</select></div>
         <label class="chk"><input type="checkbox" id="esSoloEmp" checked onchange="cargarEstado()"> Solo empleados</label>
         <button class="btn sec mini" onclick="crearRecordatorio()">📅 Recordatorio de cierre</button>
       </div>
+      <div class="toolbar" style="margin-bottom:0">
+        <div class="grow" style="flex:2"><label class="f">Correo de aviso (cuando TODOS hayan registrado)</label>
+          <input class="i" id="cfCorreoAviso" type="email" placeholder="jefa@ucenfotec.ac.cr" value="${esc(correoAviso)}"></div>
+        <button class="btn sec" onclick="guardarCorreoAviso()">Guardar correo</button>
+      </div>
     </div>
     <div id="esBody"></div>`;
   cargarEstado();
+}
+async function guardarCorreoAviso(){
+  const v=document.getElementById('cfCorreoAviso').value.trim();
+  loader(true,'Guardando…');
+  try{ await setConfig('correo_aviso',v); toast(v?'Correo de aviso guardado':'Correo de aviso desactivado','ok'); }
+  catch(e){ toast('Error: '+e.message,'err'); } finally{ loader(false); }
 }
 async function cargarEstado(){
   const cont=document.getElementById('esBody');
   cont.innerHTML=`<div class="panel"><div class="empty"><div class="spin" style="margin:0 auto 12px"></div>Cargando…</div></div>`;
   const mes=+document.getElementById('esMes').value, anio=+document.getElementById('esAnio').value, soloEmp=document.getElementById('esSoloEmp').checked;
-  const [us,regs,tareas]=await Promise.all([getUsuarios(true),readTab(TAB.REG),readTab(TAB.TAR)]);
+  const [us,regs,tareas,coms]=await Promise.all([getUsuarios(true),readTab(TAB.REG),readTab(TAB.TAR),readTab(TAB.COM)]);
   let people=us.filter(u=>isTrue(u.activo)); if(soloEmp) people=people.filter(u=>isTrue(u.es_empleado));
-  const rows=people.map(u=>{
+  let nReg=0,nPend=0;
+  const data=people.map(u=>{
     const rr=regs.rows.filter(r=>(r.correo||'').toLowerCase()===(u.correo||'').toLowerCase() && +r.anio===anio && +r.mes===mes && r.horas!=='');
     const asign=tareas.rows.filter(t=>(t.correo||'').toLowerCase()===(u.correo||'').toLowerCase() && +t.anio===anio && +t.mes===mes).length;
     const total=rr.reduce((s,r)=>s+(parseFloat(r.horas)||0),0);
     const completo=rr.length>0;
-    return `<tr>
-      <td>${esc(u.nombre)}</td>
+    completo? nReg++ : nPend++;
+    const com=coms.rows.find(c=>(c.correo||'').toLowerCase()===(u.correo||'').toLowerCase() && +c.anio===anio && +c.mes===mes);
+    return {u,asign,total,completo,com};
+  });
+  const rows=data.map(({u,asign,total,completo,com})=>`<tr>
+      <td style="font-weight:600">${esc(u.nombre)} ${com?'<span title="Dejó un comentario">💬</span>':''}</td>
       <td>${asign} asignada(s)</td>
       <td><b>${Math.round(total*100)/100} h</b></td>
       <td>${completo?'<span class="pill on"><span class="dot g"></span>Registró</span>':'<span class="pill off"><span class="dot r"></span>Pendiente</span>'}</td>
-      <td><button class="btn mini sec" onclick="editarHoras('${esc(u.correo)}','${esc(u.nombre)}',${anio},${mes})">Editar horas</button></td>
-    </tr>`;
-  }).join('');
+      <td class="row-actions">
+        <button class="btn mini sec" onclick="editarHoras('${esc(u.correo)}','${esc(u.nombre)}',${anio},${mes})">Editar horas</button>
+        ${!completo?`<button class="btn mini" onclick="recordarPersona('${esc(u.correo)}','${esc(u.nombre)}',${anio},${mes})">✉ Recordar</button>`:''}
+      </td>
+    </tr>`).join('');
+  const comentarios=data.filter(d=>d.com).map(d=>`
+      <div class="comment-view"><div class="meta">${esc(d.u.nombre)} · ${MESES[mes-1]} ${anio}</div>${esc(d.com.comentario)}</div>`).join('');
   cont.innerHTML=`<div class="panel">
-      <h3>${MESES[mes-1]} ${anio} · ${people.length} persona(s)</h3>
+      <div class="chips">
+        <div class="chip g"><span class="num">${nReg}</span> Registraron</div>
+        <div class="chip r"><span class="num">${nPend}</span> Pendientes</div>
+        <div class="chip b"><span class="num">${people.length}</span> Total</div>
+        ${nPend>0?`<button class="btn mini" style="margin-left:auto" onclick="recordarPendientes(${anio},${mes})">✉ Recordar a todos los pendientes (${nPend})</button>`:''}
+        ${nPend===0&&people.length>0?`<span class="pill on" style="margin-left:auto">🎉 Todos registraron</span>`:''}
+      </div>
       <div class="tbl-wrap"><table>
         <thead><tr><th>Persona</th><th>Tareas</th><th>Total</th><th>Estado</th><th>Acciones</th></tr></thead>
         <tbody>${rows||'<tr><td colspan="5" class="empty">Sin personas para el filtro seleccionado.</td></tr>'}</tbody>
       </table></div>
-    </div>`;
+    </div>
+    ${comentarios?`<div class="panel"><h3>💬 Comentarios del mes</h3><div class="desc">Notas que dejaron las personas al registrar sus horas.</div>${comentarios}</div>`:''}`;
+}
+async function recordarPersona(correo,nombre,anio,mes){
+  loader(true,'Enviando recordatorio…');
+  try{
+    await sendMail(correo,`Recordatorio · Registra tus horas de ${MESES[mes-1]} ${anio}`,
+      `Hola ${nombre},\n\nAún no has registrado tus horas de ${MESES[mes-1]} ${anio} en el Sistema DCD.\n\nPor favor ingresa y completa tus tareas asignadas.\n\n— Desarrollo Curricular, CENFOTEC`);
+    toast(`Recordatorio enviado a ${nombre}`,'ok');
+  }catch(e){ toast('No se pudo enviar: '+e.message,'err'); } finally{ loader(false); }
+}
+async function recordarPendientes(anio,mes){
+  const soloEmp=document.getElementById('esSoloEmp').checked;
+  loader(true,'Enviando recordatorios…');
+  try{
+    const [us,regs]=await Promise.all([getUsuarios(),readTab(TAB.REG)]);
+    let people=us.filter(u=>isTrue(u.activo)); if(soloEmp) people=people.filter(u=>isTrue(u.es_empleado));
+    const pend=people.filter(u=> !regs.rows.some(r=>(r.correo||'').toLowerCase()===(u.correo||'').toLowerCase() && +r.anio===anio && +r.mes===mes && r.horas!==''));
+    let ok=0;
+    for(const u of pend){
+      try{
+        await sendMail(u.correo,`Recordatorio · Registra tus horas de ${MESES[mes-1]} ${anio}`,
+          `Hola ${u.nombre},\n\nAún no has registrado tus horas de ${MESES[mes-1]} ${anio} en el Sistema DCD.\n\nPor favor ingresa y completa tus tareas asignadas.\n\n— Desarrollo Curricular, CENFOTEC`);
+        ok++;
+      }catch(e){}
+    }
+    toast(`Recordatorios enviados: ${ok} de ${pend.length}`, ok===pend.length?'ok':'err');
+  }catch(e){ toast('Error: '+e.message,'err'); } finally{ loader(false); }
+}
+// Aviso automático cuando TODOS los usuarios con tareas asignadas del mes ya registraron
+async function checkTodosRegistraron(anio,mes){
+  const correo=await getConfig('correo_aviso'); if(!correo) return;
+  const flag=`aviso_${anio}_${mes}`;
+  if(await getConfig(flag)==='enviado') return;
+  const [us,regs,tareas]=await Promise.all([getUsuarios(true),readTab(TAB.REG),readTab(TAB.TAR)]);
+  const conTareas=us.filter(u=>isTrue(u.activo) && tareas.rows.some(t=>(t.correo||'').toLowerCase()===(u.correo||'').toLowerCase() && +t.anio===anio && +t.mes===mes));
+  if(conTareas.length===0) return;
+  const todos=conTareas.every(u=> regs.rows.some(r=>(r.correo||'').toLowerCase()===(u.correo||'').toLowerCase() && +r.anio===anio && +r.mes===mes && r.horas!==''));
+  if(!todos) return;
+  const lista=conTareas.map(u=>{
+    const tot=regs.rows.filter(r=>(r.correo||'').toLowerCase()===(u.correo||'').toLowerCase() && +r.anio===anio && +r.mes===mes).reduce((s,r)=>s+(parseFloat(r.horas)||0),0);
+    return `• ${u.nombre}: ${Math.round(tot*100)/100} h`;
+  }).join('\n');
+  await sendMail(correo,`✅ Todos registraron sus horas · ${MESES[mes-1]} ${anio}`,
+    `Buenas,\n\nTodas las personas con tareas asignadas ya registraron sus horas de ${MESES[mes-1]} ${anio}:\n\n${lista}\n\nYa puedes generar los reportes del mes.\n\n— Sistema DCD, CENFOTEC`);
+  await setConfig(flag,'enviado');
 }
 async function editarHoras(correo,nombre,anio,mes){
   const cont=document.getElementById('esBody');
@@ -975,6 +1234,7 @@ async function guardarHorasAdmin(correo,nombre,anio,mes){
     });
     await upsertRegistros(correo,nombre,anio,mes,entradas);
     toast('Horas actualizadas','ok'); cargarEstado();
+    checkTodosRegistraron(anio,mes).catch(()=>{});
   }catch(e){ toast('Error: '+e.message,'err'); } finally{ loader(false); }
 }
 
